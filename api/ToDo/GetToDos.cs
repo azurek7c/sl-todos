@@ -1,34 +1,33 @@
-using System.IO;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using api.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 
 namespace api.ToDo
 {
-    public static class GetToDos
+  public static class GetToDos
+  {
+    [FunctionName("GetTodos")]
+    public static async Task<IActionResult> Run(
+        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)] HttpRequest req,
+        ILogger log)
     {
-        [FunctionName("GetTodos")]
-        public static async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequest req,
-            ILogger log)
-        {
-            log.LogInformation("C# HTTP trigger function processed a request.");
+      log.LogInformation("Get ToDos");
 
-            string name = req.Query["name"];
 
-            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-            dynamic data = JsonConvert.DeserializeObject(requestBody);
-            name = name ?? data?.name;
 
-            string responseMessage = string.IsNullOrEmpty(name)
-                ? "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response."
-                : $"Hello, {name}. This HTTP triggered function executed successfully.";
+      List<TodoResponse> todos = new List<TodoResponse>
+      {
+        new TodoResponse { Name = "t1", Done = false },
+        new TodoResponse { Name = "t2", Done = false }
+      };
 
-            return new OkObjectResult(responseMessage);
-        }
+
+      return new OkObjectResult(todos);
     }
+  }
 }
