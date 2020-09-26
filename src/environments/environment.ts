@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  apiUrl: 'http://localhost:7071/api'
+  apiUrl: 'https://jolly-bay-02a34a603.azurestaticapps.net/api',
 };
 
 /*
